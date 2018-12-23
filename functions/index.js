@@ -178,7 +178,7 @@ app.intent('Lecture terminée', conv => {
 
   console.log({ mediaStatus, lastPlayed })
 
-  conv.ask('Lecture terminée !')
+  conv.ask("J'ai fini de diffuser l'extrait sonore")
 
   // regarding lastPlayed, broadcast another media
 

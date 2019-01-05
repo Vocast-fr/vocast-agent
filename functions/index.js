@@ -11,11 +11,13 @@ const {
 } = require('actions-on-google')
 const admin = require('firebase-admin')
 const functions = require('firebase-functions')
-const { sample, slice } = require('lodash')
+const { get, sample, slice } = require('lodash')
 const fetch = require('superagent')
 
 admin.initializeApp()
 const auth = admin.auth()
+const db = admin.firestore()
+db.settings({ timestampsInSnapshots: true })
 
 const {
   helpResponses,
@@ -37,20 +39,21 @@ app.intent('Aide', conv => {
 })
 
 app.intent('Choix episode', (conv, params, episode) => {
-  console.log('Choix ', episode)
+  // console.log('Choix ', episode)
   const fullEpisode = undefined
   return podcastResponse(conv, params, fullEpisode, episode)
 })
 
 app.intent('Connexion', async (conv, params, signin) => {
   if (signin.status === 'OK') {
+    conv.data.rejectSignIn = false
     const payload = conv.user.profile.payload
 
     const { email, given_name, family_name } = payload
 
     conv.user.storage.userInfos = { email, given_name, family_name }
 
-    console.log('User authenticated', conv.user.storage.userInfos)
+    // console.log('User authenticated', conv.user.storage.userInfos)
 
     if (email) {
       try {
@@ -84,6 +87,8 @@ app.intent('Connexion', async (conv, params, signin) => {
       suggestionsResponse(conv)
     }
   } else {
+    conv.data.rejectSignIn = true
+
     conv.ask(
       `L'authentification n'est pas possible. Demandez un 'Vocazap au hasard' pour écouter un zapping Vocazap sans participer au concours`
     )
@@ -92,6 +97,18 @@ app.intent('Connexion', async (conv, params, signin) => {
       conv.ask(new Suggestions([`Vocazap au hasard`, 'Liste épisodes']))
     }
   }
+})
+
+app.intent('Contenu bonus', conv => {
+  conv.ask(
+    new SimpleResponse({
+      text:
+        "Il n'y a pas encore d'épisodes bonus disponible. Revenez bientôt pour écouter du contenu exclusivement disponible via Google Assistant !",
+      speech:
+        "Il n'y a pas encore d'épisodes bonus disponible. Revenez bientôt pour écouter du contenu exclusivement disponible via Google Assistant !"
+    })
+  )
+  helpResponses(conv)
 })
 
 app.intent('Default Fallback Intent', conv => {
@@ -139,13 +156,23 @@ app.intent('Intégrale Des Ondes Vocast', (conv, params) => {
 app.intent('Jeu Vocazap', (conv, params) => {
   const { radios } = params
 
-  console.log('Jeu vocazap', radios, conv.user.storage.userInfos)
+  // console.log('Jeu vocazap', radios, conv.user.storage.userInfos)
 
   if (radios && radios.length) {
     conv.user.storage.vocazapRadio = radios
 
     if (conv.user.storage.userInfos) {
       return vocazapResponse(conv, radios)
+    } else if (conv.data.rejectSignIn) {
+      conv.ask(
+        new SimpleResponse({
+          text:
+            'Vous avez refusé de vous connecter, je vais lancer un Vocazap au hasard sans participation au jeu.',
+          speech:
+            'Vous avez refusé de vous connecter, je vais lancer un Vocazap au hasard sans participation au jeu.'
+        })
+      )
+      return vocazapResponse(conv)
     } else {
       conv.ask(
         new SignIn('Pour jouer au Vocazap et être contacté en cas de gain')
@@ -172,15 +199,25 @@ app.intent('Jeu Vocazap', (conv, params) => {
   }
 })
 
-app.intent('Lecture terminée', conv => {
+app.intent('Lecture terminée', async conv => {
   const mediaStatus = conv.arguments.get('MEDIA_STATUS')
   const { lastPlayed } = conv.user.storage
 
-  console.log({ mediaStatus, lastPlayed })
+  // console.log({ mediaStatus, lastPlayed })
+
+  await db.runTransaction(t => {
+    t.set(db.collection('played').doc(`${+new Date()}`), {
+      date: new Date(),
+      mediaStatus: mediaStatus || false,
+      lastPlayed: lastPlayed || false,
+      email: get(conv, 'user.storage.userInfos.email', false)
+    })
+    return Promise.resolve('Wrote in DB')
+  })
 
   conv.ask("J'ai fini de diffuser l'extrait sonore")
 
-  // regarding lastPlayed, broadcast another media
+  // @todo regarding lastPlayed, broadcast another media
 
   helpResponses(conv)
 })
@@ -247,7 +284,7 @@ app.intent('Quitter', conv => {
 })
 
 app.intent('Supprimer les données', conv => {
-  console.log('Suppression des donées demandé')
+  console.log('Suppression des données demandé')
 
   conv.user.storage.played = null
 
@@ -265,4 +302,4 @@ app.intent('Vocazap au hasard', conv => {
   return vocazapResponse(conv)
 })
 
-exports.dialogflowFulfillment = functions.https.onRequest(app)
+exports.dialogflowVocastAgentFulfillment = functions.https.onRequest(app)

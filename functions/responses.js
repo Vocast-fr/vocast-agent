@@ -9,7 +9,6 @@ const fetch = require('superagent')
 
 const admin = require('firebase-admin')
 const db = admin.firestore()
-db.settings({ timestampsInSnapshots: true })
 
 const { getRandomRadioForChip } = require('./utils')
 
@@ -34,9 +33,9 @@ const helpResponses = conv => {
         },
         {
           text:
-            'On peut jouer ensemble au Vocazap ! Ou alors vous pouvez lancer le podcast Des Ondes Vocast ! Que voulez-vous ?',
+            'On peut jouer ensemble au Vocazap. Ou alors vous pouvez lancer le podcast Des Ondes Vocast ! Que voulez-vous ?',
           speech:
-            'On peut jouer ensemble au Vocazap ! Ou alors vous pouvez lancer le podcast Des Ondes Vocast ! Que voulez-vous ?'
+            'On peut jouer ensemble au Vocazap. Ou alors vous pouvez lancer le podcast Des Ondes Vocast ! Que voulez-vous ?'
         },
         {
           text:
@@ -86,12 +85,6 @@ const podcastResponse = (conv, params, fullEpisode, episode) => {
           episode_id
         )
 
-        console.log(
-          'Compare',
-          { episode_id, episode },
-          `${episode_id}` === `${episode}`
-        )
-
         const episodeChoice = `${episode_id}` === `${episode}`
 
         const titleOkAccordingParams =
@@ -108,20 +101,23 @@ const podcastResponse = (conv, params, fullEpisode, episode) => {
       const { episode_id, image_url, published_at, title } =
         selectedEpisode || {}
 
-      console.log({ selectedEpisode })
+      // console.log({ selectedEpisode })
 
       if (episode_id) {
         conv.user.storage.played.episodes.push(episode_id)
         conv.user.storage.lastPlayed = {
           type: episode ? 'choice' : fullEpisode ? 'dov-full' : params.extraits,
+          title,
+          episode_id,
           media_id: episode_id
         }
 
         await db.runTransaction(t => {
           t.set(db.collection('dov_plays').doc(`${+new Date()}`), {
+            date: new Date(),
             fullEpisode: !!fullEpisode,
-            params: params || {},
-            selectedEpisode: title,
+            params: params || false,
+            selectedEpisode: title || false,
             email: get(conv, 'user.storage.userInfos.email', false)
           })
           return Promise.resolve('Wrote in DB')
@@ -184,6 +180,29 @@ const suggestionsResponse = conv => {
 
 const vocazapResponse = (conv, radio) => {
   return fetch(VOCAZAP_URL).then(async r => {
+    /** TEST */
+    r.body = {
+      date: '2019-01-05T15:23:35.151Z',
+      zap: {
+        id: 4089,
+        zap_id: 1026,
+        record_id: 14947,
+        radio_id: 373,
+        record_url:
+          'https://storage.googleapis.com/vocazap-main-bucket/piges/Gold FM/18-12-15/Gold FM@sam. 18-12-15 02.mp3',
+        timestamp: '2018-12-15T02:00:00.000Z',
+        position: 1,
+        timestamp_cursor: '2018-12-15T02:37:22.000Z',
+        zap_url:
+          'https://storage.googleapis.com/vocazap-main-bucket/zaps/18-12-31/1546226113114.mp3',
+        zap_path: 'zaps/18-12-31/1546226113114.mp3',
+        created_date: '2018-12-31T03:15:13.000Z',
+        name: 'Gold FM',
+        stream_url: 'http://mediam.streamakaci.com/goldfm.mp3'
+      }
+    }
+    // */
+
     const { zap_id, zap_url, name } = r.body.zap
 
     if (!conv.user.storage.played) {
@@ -193,6 +212,9 @@ const vocazapResponse = (conv, radio) => {
     conv.user.storage.played.vocazaps.push(zap_id)
     conv.user.storage.lastPlayed = {
       type: 'vocazap',
+      zap_id,
+      zap_url,
+      name,
       media_id: zap_id
     }
 
@@ -205,11 +227,12 @@ const vocazapResponse = (conv, radio) => {
 
       await db.runTransaction(t => {
         t.set(db.collection('vocazap').doc(`${+new Date()}`), {
-          email: conv.user.storage.userInfos.email,
-          zap_radio: name,
-          user_radio: radio,
+          date: new Date(),
+          email: get(conv, 'user.storage.userInfos.email', false),
+          zap_radio: name || false,
+          user_radio: radio || false,
           winning,
-          nbPlays: conv.user.storage.vocaPlays
+          nbPlays: get(conv, 'user.storage.vocaPlays', false)
         })
         return Promise.resolve('Wrote in DB')
       })
@@ -271,8 +294,8 @@ const welcomeResponse = conv => {
       new SimpleResponse(
         sample([
           {
-            text: "Bienvenue dans l'univers Vocast !",
-            speech: "Bienvenue dans l'univers Vocast !"
+            text: "Bienvenue dans l'univers Vocast.",
+            speech: "Bienvenue dans l'univers Vocast."
           }
         ])
       )
@@ -282,17 +305,16 @@ const welcomeResponse = conv => {
       new SimpleResponse(
         sample([
           {
-            text: "Ravi de vous accueillir de nouveau dans l'univers Vocast !",
-            speech: "Ravi de vous accueillir de nouveau dans l'univers Vocast !"
+            text: "Ravi de vous accueillir de nouveau dans l'univers Vocast.",
+            speech: "Ravi de vous accueillir de nouveau dans l'univers Vocast."
           },
           {
-            text: "Bienvenue de nouveau dans l'univers de Vocast !",
-            speech: "Bienvenue de nouveau dans l'univers de Vocast !"
+            text: "Bienvenue de nouveau dans l'univers de Vocast.",
+            speech: "Bienvenue de nouveau dans l'univers de Vocast."
           },
           {
-            text: "Nous sommes contents de vous revoir dans l'univers Vocast !",
-            speech:
-              "Nous sommes contents de vous revoir dans l'univers Vocast !"
+            text: "Nous sommes contents de vous revoir dans l'univers Vocast.",
+            speech: "Nous sommes contents de vous revoir dans l'univers Vocast."
           }
         ])
       )

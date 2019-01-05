@@ -5,6 +5,7 @@ const {
   Suggestions
 } = require('actions-on-google')
 const { get, sample } = require('lodash')
+const moment = require('moment')
 const fetch = require('superagent')
 
 const admin = require('firebase-admin')
@@ -133,7 +134,9 @@ const podcastResponse = (conv, params, fullEpisode, episode) => {
           new MediaObject({
             name: `${title} - Des Ondes Vocast`,
             url: `https://api.spreaker.com/v2/episodes/${episode_id}/play.mp3`,
-            description: `Date de publication : ${published_at}`,
+            description: `Date de publication : ${moment(published_at)
+              .locale('fr')
+              .format('LLLL')}`,
             icon: new Image({
               url: image_url,
               alt: title

@@ -22,39 +22,65 @@ const helpResponses = conv => {
       sample([
         {
           text:
-            "Deux choses sont possibles : écouter le podcast Des Ondes Vocast ou bien générer un zapping radio permettant de gagner des enceintes connectées. Pour jouer, il suffit de demander 'le Vocazap'",
+            'Deux choses sont possibles : écouter le podcast Des Ondes Vocast' +
+            ' ou bien générer un zapping radio permettant de gagner des enceintes connectées.' +
+            " Pour jouer, il suffit de demander 'le Vocazap'." +
+            ' Vous pouvez également me demander de quitter',
           speech:
-            "Deux choses sont possibles : écouter le podcast Des Ondes Vocast ou bien générer un zapping radio permettant de gagner des enceintes connectées. Pour jouer, il suffit de demander 'le Vocazap'"
+            'Deux choses sont possibles : écouter le podcast Des Ondes Vocast' +
+            ' ou bien générer un zapping radio permettant de gagner des enceintes connectées.' +
+            " Pour jouer, il suffit de demander 'le Vocazap'." +
+            ' Vous pouvez également me demander de quitter.'
         },
         {
           text:
-            'Avec Vocast et les assistants vocaux, vous pouvez écouter le podcast Des Ondes Vocast ou bien jouer au Vocazap pour tenter de gagner une enceinte connectée ! Que souhaitez-vous ?',
+            'Avec Vocast et les assistants vocaux, vous pouvez écouter le podcast Des Ondes Vocast' +
+            ' ou bien jouer au Vocazap pour tenter de gagner une enceinte connectée !' +
+            ' Que souhaitez-vous ?',
           speech:
-            'Avec Vocast et les assistants vocaux, vous pouvez écouter le podcast Des Ondes Vocast ou bien jouer au Vocazap pour tenter de gagner une enceinte connectée ! Que souhaitez-vous ?'
+            'Avec Vocast et les assistants vocaux, vous pouvez écouter le podcast Des Ondes Vocast' +
+            ' ou bien jouer au Vocazap pour tenter de gagner une enceinte connectée !' +
+            ' Que souhaitez-vous ?'
         },
         {
           text:
-            'On peut jouer ensemble au Vocazap. Ou alors vous pouvez lancer le podcast Des Ondes Vocast ! Que voulez-vous ?',
+            'On peut jouer ensemble au Vocazap.' +
+            ' Ou alors vous pouvez lancer le podcast Des Ondes Vocast ! Que voulez-vous ?' +
+            ' Dites "quitter" si vous ne voulez plus me parler',
           speech:
-            'On peut jouer ensemble au Vocazap. Ou alors vous pouvez lancer le podcast Des Ondes Vocast ! Que voulez-vous ?'
+            'On peut jouer ensemble au Vocazap.' +
+            ' Ou alors vous pouvez lancer le podcast Des Ondes Vocast ! Que voulez-vous ?' +
+            ' Dites quitter si vous ne voulez plus me parler'
         },
         {
           text:
-            'Avec cette appli conversationnelle, vous pouvez écouter le podcast Des Ondes Vocast ou générer des zappings radio et tenter de gagner des cadeaux en jouant au Vocazap ! Que souhaitez-vous ?',
+            'Avec cette appli conversationnelle,' +
+            ' vous pouvez écouter le podcast Des Ondes Vocast' +
+            ' ou générer des zappings radio et tenter de gagner des cadeaux en jouant au Vocazap !' +
+            ' Que souhaitez-vous ?',
           speech:
-            'Avec cette appli conversationnelle, vous pouvez écouter le podcast Des Ondes Vocast ou générer des zappings radio et tenter de gagner des cadeaux en jouant au Vocazap ! Que souhaitez-vous ?'
+            'Avec cette appli conversationnelle,' +
+            ' vous pouvez écouter le podcast Des Ondes Vocast' +
+            ' ou générer des zappings radio et tenter de gagner des cadeaux en jouant au Vocazap !' +
+            ' Que souhaitez-vous ?'
         },
         {
           text:
-            "Vous pouvez demander à diffuser un épisode Des Ondes Vocast ou bien générer un zapping radio, avec le Vocazap. C'est à vous ;)",
+            'Vous pouvez demander à diffuser un épisode Des Ondes Vocast' +
+            ' ou bien générer un zapping radio, avec le Vocazap.' +
+            " Vous pouvez également quitter à tout moment. C'est à vous ;)",
           speech:
-            "Vous pouvez demander à diffuser un épisode Des Ondes Vocast ou bien générer un zapping radio, avec le Vocazap. C'est à vous "
+            'Vous pouvez demander à diffuser un épisode Des Ondes Vocast' +
+            ' ou bien générer un zapping radio, avec le Vocazap.' +
+            " Vous pouvez également quitter à tout moment. C'est à vous "
         },
         {
           text:
-            "Ensemble, nous pouvons écouter un podcast Des Ondes Vocast ou bien jouer au Vocazap ! Qu'est-ce que vous ferait plaisir ?",
+            'Ensemble, nous pouvons écouter un podcast Des Ondes Vocast' +
+            " ou bien jouer au Vocazap ! Qu'est-ce que vous ferait plaisir ?",
           speech:
-            "Ensemble, nous pouvons écouter un podcast Des Ondes Vocast ou bien jouer au Vocazap ! Qu'est-ce que vous ferait plaisir ?"
+            'Ensemble, nous pouvons écouter un podcast Des Ondes Vocast' +
+            " ou bien jouer au Vocazap ! Qu'est-ce que vous ferait plaisir ?"
         }
       ])
     )
@@ -284,7 +310,7 @@ const vocazapResponse = (conv, radio) => {
             `<audio src='https://storage.googleapis.com/agent-responses/play_vocazap.mp3'>` +
             `Et voici le Vocazap généré.</audio> ` +
             `<audio src="${zap_url}">[Vocazap]</audio>` +
-            `</speak>.`,
+            `</speak>`,
           text: 'Et voici le Vocazap généré.'
         })
       )
@@ -295,7 +321,7 @@ const vocazapResponse = (conv, radio) => {
             `<speak>` +
             `<audio src='https://storage.googleapis.com/agent-responses/play_vocazap.mp3'>` +
             `Et voici le Vocazap généré.</audio> ` +
-            `</speak>.`,
+            `</speak>`,
           text: `Et voici le Vocazap généré.`
         })
       )

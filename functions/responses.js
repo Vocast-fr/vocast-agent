@@ -125,10 +125,27 @@ const podcastResponse = (conv, params, fullEpisode, episode) => {
         })
 
         conv.ask(
-          new SimpleResponse({
-            text: `Je mets l'épisode '${title}' du podcast Des Ondes Vocast`,
-            speech: `Je mets l'épisode '${title}' du podcast Des Ondes Vocast`
-          })
+          new SimpleResponse(
+            sample([
+              {
+                text: `Je mets l'épisode '${title}' du podcast Des Ondes Vocast`,
+                speech:
+                  '<speak>' +
+                  `<audio src='https://storage.googleapis.com/agent-responses/podcast_resp_1.mp3'>` +
+                  `Je mets l'épisode '${title}' du podcast Des Ondes Vocast` +
+                  '</audio>' +
+                  '</speak>'
+              },
+              {
+                text: `Voici l'épisode '${title}' du podcast Des Ondes Vocast`,
+                speech:
+                  '<speak>' +
+                  `<audio src='https://storage.googleapis.com/agent-responses/podcast_resp_2.mp3'>` +
+                  `Voici l'épisode '${title}' du podcast Des Ondes Vocast` +
+                  '</audio></speak>'
+              }
+            ])
+          )
         )
         conv.ask(
           new MediaObject({
@@ -262,14 +279,23 @@ const vocazapResponse = (conv, radio) => {
     ) {
       conv.ask(
         new SimpleResponse({
-          speech: `<speak>Je vous diffuse le Vocazap. <audio src="${zap_url}">[Vocazap]</audio>.`,
-          text: 'Et voici le Vocazap.'
+          speech:
+            `<speak>` +
+            `<audio src='https://storage.googleapis.com/agent-responses/play_vocazap.mp3'>` +
+            `Et voici le Vocazap généré.</audio> ` +
+            `<audio src="${zap_url}">[Vocazap]</audio>` +
+            `</speak>.`,
+          text: 'Et voici le Vocazap généré.'
         })
       )
     } else {
       conv.ask(
         new SimpleResponse({
-          speech: `Et voici le Vocazap généré.`,
+          speech:
+            `<speak>` +
+            `<audio src='https://storage.googleapis.com/agent-responses/play_vocazap.mp3'>` +
+            `Et voici le Vocazap généré.</audio> ` +
+            `</speak>.`,
           text: `Et voici le Vocazap généré.`
         })
       )
@@ -298,7 +324,8 @@ const welcomeResponse = conv => {
         sample([
           {
             text: "Bienvenue dans l'univers Vocast.",
-            speech: "Bienvenue dans l'univers Vocast."
+            speech:
+              "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_new.mp3'>Bienvenue dans l'univers Vocast.</audio></speak>"
           }
         ])
       )
@@ -309,15 +336,18 @@ const welcomeResponse = conv => {
         sample([
           {
             text: "Ravi de vous accueillir de nouveau dans l'univers Vocast.",
-            speech: "Ravi de vous accueillir de nouveau dans l'univers Vocast."
+            speech:
+              "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_r1.mp3'>Ravi de vous accueillir de nouveau dans l'univers Vocast.</audio></speak>"
           },
           {
             text: "Bienvenue de nouveau dans l'univers de Vocast.",
-            speech: "Bienvenue de nouveau dans l'univers de Vocast."
+            speech:
+              "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_r2.mp3'>Bienvenue de nouveau dans l'univers de Vocast.</audio></speak>"
           },
           {
             text: "Nous sommes contents de vous revoir dans l'univers Vocast.",
-            speech: "Nous sommes contents de vous revoir dans l'univers Vocast."
+            speech:
+              "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_r3.mp3'>Nous sommes contents de vous revoir dans l'univers Vocast.</audio></speak>"
           }
         ])
       )

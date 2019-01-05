@@ -119,19 +119,31 @@ app.intent('Default Fallback Intent', conv => {
           text:
             "On va examiner cette demande un peu plus tard, car nous n'avons pas de réponses à vous apporter.",
           speech:
-            "On va examiner cette demande un peu plus tard, car nous n'avons pas de réponses à vous apporter."
+            '<speak>' +
+            `<audio src='https://storage.googleapis.com/agent-responses/fallback_1.mp3'>` +
+            "On va examiner cette demande un peu plus tard, car nous n'avons pas de réponses à vous apporter." +
+            '</audio>' +
+            '</speak>'
         },
         {
           text:
             "Nous n'avons pas tout compris... Il faut qu'on s'entraîne un peu plus pour être meilleurs ! Qu'est-ce qu'on fait du coup ?",
           speech:
-            "Nous n'avons pas tout compris... Il faut qu'on s'entraîne un peu plus pour être meilleurs ! Qu'est-ce qu'on fait du coup ?"
+            '<speak>' +
+            `<audio src='https://storage.googleapis.com/agent-responses/fallback_2.mp3'>` +
+            "Nous n'avons pas tout compris... Il faut qu'on s'entraîne un peu plus pour être meilleurs ! Qu'est-ce qu'on fait du coup ?" +
+            '</audio>' +
+            '</speak>'
         },
         {
           text:
             'Aïe ! Nous avons du mal à tout comprendre ! Peut-être avons-nous pas été assez clairs sur les choses que nous pouvons vous apporter ?',
           speech:
-            'Aïe ! Nous avons du mal à tout comprendre ! Peut-être avons-nous pas été assez clairs sur les choses que nous pouvons vous apporter ?'
+            '<speak>' +
+            `<audio src='https://storage.googleapis.com/agent-responses/fallback_3.mp3'>` +
+            'Aïe ! Nous avons du mal à tout comprendre ! Peut-être avons-nous pas été assez clairs sur les choses que nous pouvons vous apporter ?' +
+            '</audio>' +
+            '</speak>'
         }
       ])
     )

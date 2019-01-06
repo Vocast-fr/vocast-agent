@@ -103,9 +103,9 @@ app.intent('Contenu bonus', conv => {
   conv.ask(
     new SimpleResponse({
       text:
-        "Il n'y a pas encore d'épisodes bonus disponible. Revenez bientôt pour écouter du contenu exclusivement disponible via Google Assistant !",
+        "Il n'y a pas encore d'épisodes bonus disponible. Revenez bientôt pour écouter du contenu exclusivement disponible via l'Assistant Google !",
       speech:
-        "Il n'y a pas encore d'épisodes bonus disponible. Revenez bientôt pour écouter du contenu exclusivement disponible via Google Assistant !"
+        "Il n'y a pas encore d'épisodes bonus disponible. Revenez bientôt pour écouter du contenu exclusivement disponible via l'Assistant Google !"
     })
   )
   helpResponses(conv)

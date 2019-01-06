@@ -226,7 +226,7 @@ const suggestionsResponse = conv => {
 
 const vocazapResponse = (conv, radio) => {
   return fetch(VOCAZAP_URL).then(async r => {
-    /** TEST */
+    /**
     r.body = {
       date: '2019-01-05T15:23:35.151Z',
       zap: {

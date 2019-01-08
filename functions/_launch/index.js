@@ -14,10 +14,10 @@ const functions = require('firebase-functions')
 const { get, sample, slice } = require('lodash')
 const fetch = require('superagent')
 
-admin.initializeApp()
+// admin.initializeApp()
 const auth = admin.auth()
 const db = admin.firestore()
-db.settings({ timestampsInSnapshots: true })
+// db.settings({ timestampsInSnapshots: true })
 
 const {
   helpResponses,
@@ -27,7 +27,7 @@ const {
   welcomeResponse
 } = require('./responses')
 
-const { getRandomRadioForChip } = require('./utils')
+const { getRandomRadioForChip } = require('../utils')
 
 const { CLIENT_ID } = process.env
 const EPISODES_URL = 'https://api.spreaker.com/v2/shows/2886866/episodes'
@@ -80,8 +80,8 @@ app.intent('Connexion', async (conv, params, signin) => {
     } else {
       conv.ask(
         new SimpleResponse({
-          text: `Informez 'Vocazap' suivi de la radio de votre choix, que choisissez-vous ?`,
-          speech: `Informez 'Vocazap' suivi de la radio de votre choix, que choisissez-vous ?`
+          text: `Informez 'Vocazap' suivi de la radio de votre choix, que choisissez-vous ? Demandez un 'Vocazap au hasard' pour écouter un zapping Vocazap sans énoncer de radio`,
+          speech: `Informez 'Vocazap' suivi de la radio de votre choix, que choisissez-vous ? Demandez un 'Vocazap au hasard' pour écouter un zapping Vocazap sans énoncer de radio`
         })
       )
       suggestionsResponse(conv)
@@ -90,12 +90,9 @@ app.intent('Connexion', async (conv, params, signin) => {
     conv.data.rejectSignIn = true
 
     conv.ask(
-      `L'authentification n'est pas possible. Demandez un 'Vocazap au hasard' pour écouter un zapping Vocazap sans participer au concours`
+      ` Demandez un 'Vocazap au hasard' pour écouter un zapping Vocazap sans énoncer de radio`
     )
-
-    if (conv.screen) {
-      conv.ask(new Suggestions([`Vocazap au hasard`, 'Liste épisodes']))
-    }
+    conv.ask(new Suggestions([`Vocazap au hasard`, 'Liste épisodes']))
   }
 })
 
@@ -179,16 +176,14 @@ app.intent('Jeu Vocazap', (conv, params) => {
       conv.ask(
         new SimpleResponse({
           text:
-            'Vous avez refusé de vous connecter, je vais lancer un Vocazap au hasard sans participation au jeu.',
+            'Vous avez refusé de vous connecter, nous comprenons votre choix et cela ne pose aucun soucis.',
           speech:
-            'Vous avez refusé de vous connecter, je vais lancer un Vocazap au hasard sans participation au jeu.'
+            'Vous avez refusé de vous connecter, nous comprenons votre choix et cela ne pose aucun soucis.'
         })
       )
-      return vocazapResponse(conv)
+      return vocazapResponse(conv, radios)
     } else {
-      conv.ask(
-        new SignIn('Pour jouer au Vocazap et être contacté en cas de gain')
-      )
+      conv.ask(new SignIn("Pour améliorer l'expérience de jeu au Vocazap"))
     }
   } else {
     const randomRadio = getRandomRadioForChip()
@@ -314,5 +309,38 @@ app.intent('Vocazap au hasard', conv => {
   return vocazapResponse(conv)
 })
 
-exports.dialogflowVocastAgentFulfillment = functions.https.onRequest(app)
-exports.dialogflowVocastAgentFulfillmentLaunch = require('./_launch')
+module.exports = functions.https.onRequest(app)
+
+/*
+  Avec l'application Vocast sur Google Assistant, vous pouvez écouter les épisodes Des Ondes Vocast ou lancer le Vocazap !.
+
+  ----------------
+
+  Du samedi 5 janvier 2019
+  18h00 au dimanche 10 février 2019 18h00, un jeu gratuit sans obligation d’achat intitulé «Vocazap » permet de gagner des enceintes connectées avec Des Ondes Vocast !
+
+  L'application vous permet de lancer un 'Vocazap', un zapping radio généré automatiquement. Si vous devinez la radio qui sera dans le premier extrait du zapping, vous gagnez une enceinte connectée !
+
+  Pour jouer, il suffit de demander "Vocazap" suivi de la radio de votre choix. Par exemple,  essayez "Vocazap sur RTL".
+  Retrouvez toutes les radios utilisées ici : https://vocast.fr/vocazap/zaps
+
+  Conditions et règlement à cette adresse : https://www.vocast.fr/vocazap/reglement-vocazap.pdf ou https://goo.gl/yfPrms
+
+  ----------------
+
+  Qu'est ce que le podcast Des Ondes Vocast ?
+  Des Ondes Vocast, c'est le podcast qui parle de radio ! A chaque épisode, il est question de la radio d'hier, d'aujourd'hui et de demain.
+
+  ----------------
+
+  Fonctionnalités de l'application :
+  - Jouer au Vocazap : "OK Google, Vocazap sur Europe 1", "OK Google, Vocazap sur NRJ"
+  - Ecouter les épisodes en intégralité : "OK Google, écouter Des Ondes Vocast"
+  - Ecouter des extraits Des Ondes Vocast : "OK Google, écouter un extrait parlant d'innovation"
+  - Supprimer les historiques de lecture : "OK Google, supprimer les données"
+
+  ---------------------------------
+
+  Contact : Pour toute remarque et suggestion vous pouvez nous contacter via le mail contact@vocast.fr
+  Notre site web : https://vocast.fr
+ */

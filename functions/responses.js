@@ -16,10 +16,20 @@ const { getRandomRadioForChip } = require('./utils')
 const EPISODES_URL = 'https://api.spreaker.com/v2/shows/2886866/episodes'
 const VOCAZAP_URL = 'https://vocazap.voca.st'
 
-const helpResponses = conv => {
+const helpResponses = (conv, extra) => {
+  const sampleWithExtra = samples => {
+    let { text, speech } = extra || {}
+    const unitSample = sample(samples)
+    text = text ? `${text} ${unitSample.text}` : unitSample.text
+    speech = speech
+      ? `<speak>${speech} ${unitSample.speech}</speak>`
+      : unitSample.speech
+    return { text, speech }
+  }
+
   conv.ask(
     new SimpleResponse(
-      sample([
+      sampleWithExtra([
         {
           text:
             'Deux choses sont possibles : écouter le podcast Des Ondes Vocast' +
@@ -344,43 +354,33 @@ const vocazapResponse = (conv, radio) => {
 }
 
 const welcomeResponse = conv => {
-  if (!conv.user.last.seen) {
-    conv.ask(
-      new SimpleResponse(
-        sample([
-          {
-            text: "Bienvenue dans l'univers Vocast.",
-            speech:
-              "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_new.mp3'>Bienvenue dans l'univers Vocast.</audio></speak>"
-          }
-        ])
-      )
-    )
-  } else {
-    conv.ask(
-      new SimpleResponse(
-        sample([
-          {
-            text: "Ravi de vous accueillir de nouveau dans l'univers Vocast.",
-            speech:
-              "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_r1.mp3'>Ravi de vous accueillir de nouveau dans l'univers Vocast.</audio></speak>"
-          },
-          {
-            text: "Bienvenue de nouveau dans l'univers de Vocast.",
-            speech:
-              "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_r2.mp3'>Bienvenue de nouveau dans l'univers de Vocast.</audio></speak>"
-          },
-          {
-            text: "Nous sommes contents de vous revoir dans l'univers Vocast.",
-            speech:
-              "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_r3.mp3'>Nous sommes contents de vous revoir dans l'univers Vocast.</audio></speak>"
-          }
-        ])
-      )
-    )
-  }
+  const welcome = !conv.user.last.seen
+    ? sample([
+      {
+        text: "Bienvenue dans l'univers Vocast.",
+        speech:
+            "<speak><audio src='https://storage.googleapis.com/agent-responses/welcome_new.mp3'>Bienvenue dans l'univers Vocast.</audio></speak>"
+      }
+    ])
+    : sample([
+      {
+        text: "Ravi de vous accueillir de nouveau dans l'univers Vocast.",
+        speech:
+            "<audio src='https://storage.googleapis.com/agent-responses/welcome_r1.mp3'>Ravi de vous accueillir de nouveau dans l'univers Vocast.</audio>"
+      },
+      {
+        text: "Bienvenue de nouveau dans l'univers de Vocast.",
+        speech:
+            "<audio src='https://storage.googleapis.com/agent-responses/welcome_r2.mp3'>Bienvenue de nouveau dans l'univers de Vocast.</audio>"
+      },
+      {
+        text: "Nous sommes contents de vous revoir dans l'univers Vocast.",
+        speech:
+            "<audio src='https://storage.googleapis.com/agent-responses/welcome_r3.mp3'>Nous sommes contents de vous revoir dans l'univers Vocast.</audio>"
+      }
+    ])
 
-  helpResponses(conv)
+  helpResponses(conv, welcome)
 }
 
 module.exports = {

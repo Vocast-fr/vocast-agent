@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const {
   dialogflow,
   Image,
@@ -13,6 +11,8 @@ const admin = require('firebase-admin')
 const functions = require('firebase-functions')
 const { get, sample, slice } = require('lodash')
 const fetch = require('superagent')
+
+const dashbot = require('dashbot')(functions.config().dashbot.key).google
 
 admin.initializeApp()
 const auth = admin.auth()
@@ -29,10 +29,13 @@ const {
 
 const { getRandomRadioForChip } = require('./utils')
 
-const { CLIENT_ID } = process.env
 const EPISODES_URL = 'https://api.spreaker.com/v2/shows/2886866/episodes'
 
-const app = dialogflow({ clientId: CLIENT_ID, debug: false })
+const app = dialogflow({
+  clientId: functions.config().gcloudactionssdk.clientid,
+  debug: false
+})
+dashbot.configHandler(app)
 
 app.intent('Aide', conv => {
   helpResponses(conv)

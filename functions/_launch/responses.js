@@ -162,20 +162,20 @@ const podcastResponse = (conv, params, fullEpisode, episode) => {
           new SimpleResponse(
             sample([
               {
-                text: `Je mets l'épisode '${title}' du podcast Des Ondes Vocast`,
+                text: `Je mets l'épisode ${title} du podcast Des Ondes Vocast`,
                 speech:
                   '<speak>' +
                   `<audio src='https://storage.googleapis.com/agent-responses/podcast_resp_1.mp3'>` +
-                  `Je mets l'épisode '${title}' du podcast Des Ondes Vocast` +
+                  `Je mets l'épisode ${title.replace(/&/gi, 'et')} du podcast Des Ondes Vocast` +
                   '</audio>' +
                   '</speak>'
               },
               {
-                text: `Voici l'épisode '${title}' du podcast Des Ondes Vocast`,
+                text: `Voici l'épisode ${title} du podcast Des Ondes Vocast`,
                 speech:
                   '<speak>' +
                   `<audio src='https://storage.googleapis.com/agent-responses/podcast_resp_2.mp3'>` +
-                  `Voici l'épisode '${title}' du podcast Des Ondes Vocast` +
+                  `Voici l'épisode ${title.replace(/&/gi, 'et')} du podcast Des Ondes Vocast` +
                   '</audio></speak>'
               }
             ])

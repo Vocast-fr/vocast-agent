@@ -14,7 +14,7 @@ const db = admin.firestore()
 const { getRandomRadioForChip } = require('../utils')
 
 const EPISODES_URL = 'https://api.spreaker.com/v2/shows/2886866/episodes'
-const VOCAZAP_URL = 'https://vocazap.voca.st'
+const VOCAZAP_URL = 'https://api.voca.st/randomzap'
 
 const helpResponses = (conv, extra) => {
   const sampleWithExtra = samples => {
@@ -302,13 +302,13 @@ const vocazapResponse = (conv, radio) => {
       } else {
         conv.ask(
           sample([
-            `Vous avez lancé le Vocazap avec la radio ${radio}.` +
+            `Vocazap lancé avec la radio ${radio}.` +
               ` Le premier extrait du zap est issu de la radio ${name}...` +
               ` Vous avez perdu ! Mais vous pouvez retenter votre chance !`,
-            `Vous avez perdu, ce n'est pas la radio ${radio} mais la radio ${name}` +
+            `Perdu ! Ce n'est pas la radio ${radio} mais la radio ${name}` +
               ` qui est dans le premier extrait... Il faut avouer que ce n'est pas facile de trouver la bonne radio !` +
               ` Mais peut-être que vous allez y arriver au bout de plusieurs tentatives ! `,
-            `Serait-ce donc la radio ${radio} sélectionnée pour le premier extrait du zap ? ` +
+            `Est-ce donc la radio ${radio} sélectionnée pour le premier extrait du zap ? ` +
               ` Et bien non, vous avez perdu, c'est la radio ${name} !`
           ])
         )

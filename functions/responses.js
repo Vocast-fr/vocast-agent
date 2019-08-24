@@ -14,7 +14,7 @@ const db = admin.firestore()
 const { getRandomRadioForChip } = require('./utils')
 
 const EPISODES_URL = 'https://api.spreaker.com/v2/shows/2886866/episodes'
-const VOCAZAP_URL = 'https://vocazap.voca.st'
+const VOCAZAP_URL = 'https://api.voca.st/randomzap'
 
 const helpResponses = (conv, extra) => {
   const sampleWithExtra = samples => {
@@ -168,7 +168,7 @@ const podcastResponse = (conv, params, fullEpisode, episode) => {
                 speech:
                   '<speak>' +
                   `<audio src='https://storage.googleapis.com/agent-responses/podcast_resp_1.mp3'>` +
-                  `Je mets l'épisode '${title}' du podcast Des Ondes Vocast` +
+                  `Je mets l'épisode '${title.replace(/&/gi, 'et')}' du podcast Des Ondes Vocast` +
                   '</audio>' +
                   '</speak>'
               },
@@ -177,7 +177,7 @@ const podcastResponse = (conv, params, fullEpisode, episode) => {
                 speech:
                   '<speak>' +
                   `<audio src='https://storage.googleapis.com/agent-responses/podcast_resp_2.mp3'>` +
-                  `Voici l'épisode '${title}' du podcast Des Ondes Vocast` +
+                  `Voici l'épisode '${title.replace(/&/gi, 'et')}' du podcast Des Ondes Vocast` +
                   '</audio></speak>'
               }
             ])
@@ -305,7 +305,7 @@ const vocazapResponse = (conv, radio) => {
         )
       } else {
         conv.ask(
-          `Vous avez lancé le Vocazap avec la radio ${radio}. Le premier extrait du zap est issu de la radio ${name}... Vous avez perdu ! Mais vous pourrez retenter votre chance !`
+          `Vocazap lancé avec la radio ${radio}. Le premier extrait du zap est issu de la radio ${name}... Vous avez perdu ! Mais vous pourrez retenter votre chance !`
         )
       }
     }
